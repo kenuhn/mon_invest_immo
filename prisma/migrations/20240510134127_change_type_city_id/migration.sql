@@ -1,0 +1,14 @@
+-- DropForeignKey
+ALTER TABLE "Post" DROP CONSTRAINT "Post_cityId_fkey";
+
+-- AlterTable
+ALTER TABLE "City" ALTER COLUMN "id" DROP DEFAULT,
+ALTER COLUMN "id" SET DATA TYPE TEXT,
+ADD CONSTRAINT "City_pkey" PRIMARY KEY ("id");
+DROP SEQUENCE "City_id_seq";
+
+-- AlterTable
+ALTER TABLE "Post" ALTER COLUMN "cityId" SET DATA TYPE TEXT;
+
+-- AddForeignKey
+ALTER TABLE "Post" ADD CONSTRAINT "Post_cityId_fkey" FOREIGN KEY ("cityId") REFERENCES "City"("id") ON DELETE CASCADE ON UPDATE CASCADE;

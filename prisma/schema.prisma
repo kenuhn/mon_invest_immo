@@ -1,0 +1,61 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://admin:test@localhost:5432/todo"
+}
+
+model User {
+  id       String    @id @default(uuid())
+  email    String
+  password String
+  Post     Post[]
+  Session  Session[]
+}
+
+model Session {
+  id     String @id @default(uuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+}
+
+model Post {
+  id       String    @id @unique @default(uuid())
+  authorId String
+  cityId   String
+  date     DateTime
+  comments Comments?
+  author   User      @relation(fields: [authorId], references: [id])
+  city     City      @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  ratings  Ratings?
+}
+
+model Comments {
+  id     String @id @unique @default(uuid())
+  postId String @unique
+  text   String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Ratings {
+  id              String @id @unique @default(uuid())
+  rentaLocative   Int
+  dispo           Int
+  coPropriete     Int
+  tentionLocative Int
+  post            Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId          String @unique
+  moyenne         Float  @default(0.0)
+}
+
+model City {
+  id          String @id @unique @default(uuid())
+  name        String
+  departement String
+  codeInsee   Int?
+  post        Post[]
+  moyenne     Float  @default(0.0)
+}
